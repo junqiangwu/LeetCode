@@ -3,18 +3,14 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+
+**/.idea/
+**/cmake-buile-debug
+
 .DS_Store
 log
 Glog/
 .idea/
-caffe/
-caffe_resnet_1patch/
-single_patch_caffe/
-single_patch_mxnet/
-to_be_converted/
-venv/
-caffe_back.tar.gz
-cuda_8.0.61.2_linux.run
 
 
 # C extensions
