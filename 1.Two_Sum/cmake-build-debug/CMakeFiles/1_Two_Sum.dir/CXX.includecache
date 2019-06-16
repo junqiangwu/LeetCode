@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/wjq/Desktop/CLion/LeetCode/1.Two_Sum/main.cpp
+iostream
+-
+vector
+-
+map
+-
+stdio.h
+-
+
