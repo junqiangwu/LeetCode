@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 #include <stdio.h>
+#include <math.h>
 
 using namespace std;
 
@@ -74,5 +75,8 @@ int main() {
     string out = integerVectorToString(ret);
 
     std::cout<<out<<endl;
+    std::cout<<(pow(10,2));
+
+
 
 }
