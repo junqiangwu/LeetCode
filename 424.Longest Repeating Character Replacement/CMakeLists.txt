@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.12)
+project(424_Longest_Repeating_Character_Replacement)
+
+set(CMAKE_CXX_STANDARD 11)
+
+add_executable(424_Longest_Repeating_Character_Replacement main.cpp)
