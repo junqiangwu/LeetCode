@@ -15,27 +15,27 @@ struct ListNode {
 class Solution {
 public:
 
-    ListNode *detectCycle(ListNode *head) {
-        if (!head) return NULL;
-        map<ListNode*,int> m;
-
-        ListNode* slow = head;
-        ListNode* fast = head;
-
-        int index = 0;
-        while(fast && fast->next){
-            m[slow] = index;
-
-            if(slow == fast){
-                int tmp = m.find(head);
-                return tmp;
-            }
-            slow = slow->next;
-            fast = fast->next->next;
-            index+=1;
-
-        }
-    }
+//    ListNode *detectCycle(ListNode *head) {
+//        if (!head) return NULL;
+//        map<ListNode*,int> m;
+//
+//        ListNode* slow = head;
+//        ListNode* fast = head;
+//
+//        int index = 0;
+//        while(fast && fast->next){
+//            m[slow] = index;
+//
+//            if(slow == fast){
+//                int tmp = m.find(head);
+//                return tmp;
+//            }
+//            slow = slow->next;
+//            fast = fast->next->next;
+//            index+=1;
+//
+//        }
+//    }
 
     // 递归实现
     ListNode* removeElements(ListNode* head, int val) {
