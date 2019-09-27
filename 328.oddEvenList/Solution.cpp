@@ -4,6 +4,161 @@
 // Created by wjq on 2019/9/23.
 //
 
+//143. 重排链表
+void Solution::reorderList(ListNode* head){
+    if (head==nullptr || head->next==nullptr) return;
+    ListNode* fast = head,*slow = head;
+    ListNode* pre;
+    while(fast && fast->next){
+        fast = fast->next->next;
+        pre = slow;
+        slow = slow->next;
+    }
+    pre->next = nullptr;
+    ListNode* pre2 = nullptr;
+    while(slow!=nullptr){
+        ListNode* tmp = slow->next;
+        slow->next = pre2;
+        pre2 = slow;
+        slow = tmp;
+    }
+    pre = head;
+    while(pre->next && pre2->next){
+        ListNode* tmp = pre->next;
+        ListNode* tmp2 = pre2->next;
+        pre->next = pre2;
+        pre2->next = tmp;
+        pre = tmp;
+        pre2 = tmp2;
+    }
+    if(!pre->next)  pre->next = pre2;
+    if(!pre2->next) pre2->next = pre;
+
+    Solution().Print_List(head);
+}
+
+
+//86. 分割链表   注意两个链表的头指针
+ListNode* Solution::partition(ListNode* head, int x) {
+    ListNode* dummy = new ListNode(0);
+    dummy->next = head;
+    ListNode* node_s = dummy,*node_d = dummy;
+    ListNode* pre_d = node_d,*pre_s=node_s;
+
+    while(head!= nullptr){
+        if(head->val >= x){
+            node_d->next = head;
+            node_d = head;
+            if(pre_d==dummy) pre_d = node_d;
+        }else{
+            node_s->next = head;
+            node_s = head;
+            if(pre_s==dummy) pre_s=node_s;
+        }
+        head = head->next;
+    }
+    node_d->next = nullptr;
+    pre_d = pre_d==dummy?pre_d->next:pre_d;
+    node_s->next = pre_d;
+    pre_s = pre_s==dummy?pre_s->next:pre_s;
+    return pre_s;
+}
+
+
+// 725. 分隔链表
+ListNode* cut2(ListNode* head,int k){
+    ListNode* tmp = head;
+    while(--k && tmp){
+        tmp = tmp->next;
+    }
+    if(tmp==nullptr) return nullptr;
+
+    ListNode* tmp2 = tmp->next;
+    tmp->next = nullptr;
+    return tmp2;
+}
+
+vector<ListNode*> Solution::splitListToParts(ListNode* root, int k) {
+    int len=0;
+    vector<ListNode*> res;
+    vector<int> cut_s;
+    ListNode* pre = root;
+    while(pre!=nullptr){
+        ++len;
+        pre = pre->next;
+    }
+    ListNode* cur = root;
+    int len_y = len%k;
+    for(int i=0;i<k;i++){
+        if(i<len_y){
+            res.push_back(cur);
+            cur = cut2(cur,len/k+1);
+        }
+        else {
+            res.push_back(cur);
+            cur = cut2(cur, len / k);
+        }
+    }
+    return res;
+}
+
+//1171. 从链表中删去总和值为零的连续节点
+ListNode* Solution::removeZeroSumSublists(ListNode* head) {
+    ListNode* dummy = new ListNode(0);
+    dummy->next = head;
+    ListNode* p=dummy;
+    while(p){
+        ListNode* tmp = p->next;
+        int sum=0;
+        while(tmp){
+            sum+=tmp->val;
+            if(sum==0)
+                break;
+            tmp = tmp->next;
+        }
+        if(tmp==nullptr){
+            p = p->next;
+        }else{
+            p->next = tmp->next;
+        }
+    }
+    return dummy->next;
+}
+
+// 1019. 链表中的下一个更大节点
+vector<int> Solution::nextLargerNodes(ListNode* head) {
+    vector<int> res;
+    if(head== nullptr) return res;
+    stack<ListNode*> ms;
+    map<ListNode*,int> mm;
+    ListNode* tmp = head;
+    ms.push(head);
+
+    while(!ms.empty() && head->next!=nullptr){
+        if(head->next->val > ms.top()->val){
+            while( !ms.empty() && head->next->val > ms.top()->val) {
+                mm[ms.top()] = head->next->val;
+                ms.pop();
+            }
+        }
+        ms.push(head->next);
+        head = head->next;
+    }
+
+    cout<<111<<endl;
+    while(tmp!= nullptr){
+        if(mm.find(tmp)!=mm.end()){
+            res.push_back(mm[tmp]);
+        }else{
+            res.push_back(0);
+        }
+        tmp = tmp->next;
+    }
+
+    return res;
+}
+
+
 // 147. 对链表进行插入排序
 ListNode* Solution::insertionSortList(ListNode* head){
     if(head== nullptr || head->next == nullptr) return head;

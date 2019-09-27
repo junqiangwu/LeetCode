@@ -8,6 +8,7 @@
 #include <iostream>
 #include <vector>
 #include <stack>
+#include <map>
 
 using namespace std;
 
@@ -20,6 +21,19 @@ struct ListNode{
 
 class Solution{
 public:
+    // 143.重排链表
+    void reorderList(ListNode* head);
+    // //86. 分割链表   注意两个链表的头指针
+    ListNode* partition(ListNode* head, int x);
+    //725. 分隔链表
+    vector<ListNode*> splitListToParts(ListNode* root, int k);
+
+    //1171. 从链表中删去总和值为零的连续节点
+    ListNode* removeZeroSumSublists(ListNode* head);
+
+    // 1019. 链表中的下一个更大节点
+    vector<int> nextLargerNodes(ListNode* head);
+
     // 147
     ListNode* insertionSortList(ListNode* head);
     // 148
