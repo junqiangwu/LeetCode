@@ -4,36 +4,65 @@
 // Created by wjq on 2019/9/23.
 //
 
+
+ListNode* Solution::rotateRight(ListNode* head, int k) {
+        if(head==nullptr) return head;
+        int len=1;
+        ListNode* pre=head;
+        while(pre->next){
+            ++len;
+            pre = pre->next;
+        }
+        int s = len - (k%len);
+
+        ListNode* fast=head,*slow=head;
+        for(int i=1;i<len;i++){
+            if(i < s)
+                slow =slow->next;
+            fast = fast->next;
+        }
+
+        pre = slow->next;
+        slow->next = nullptr;
+        fast->next = head;
+
+        return pre;
+    }
+
+
 //143. 重排链表
 void Solution::reorderList(ListNode* head){
     if (head==nullptr || head->next==nullptr) return;
     ListNode* fast = head,*slow = head;
-    ListNode* pre;
-    while(fast && fast->next){
-        fast = fast->next->next;
-        pre = slow;
-        slow = slow->next;
-    }
-    pre->next = nullptr;
-    ListNode* pre2 = nullptr;
-    while(slow!=nullptr){
-        ListNode* tmp = slow->next;
-        slow->next = pre2;
-        pre2 = slow;
-        slow = tmp;
-    }
-    pre = head;
-    while(pre->next && pre2->next){
-        ListNode* tmp = pre->next;
-        ListNode* tmp2 = pre2->next;
-        pre->next = pre2;
-        pre2->next = tmp;
-        pre = tmp;
-        pre2 = tmp2;
-    }
-    if(!pre->next)  pre->next = pre2;
-    if(!pre2->next) pre2->next = pre;
 
+    ListNode* pre;
+    while(fast->next && fast->next->next){
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    //后端反转
+    ListNode *needReverser = slow->next;
+    slow->next = NULL;
+
+    ListNode* pre2 = nullptr;
+    while(needReverser!=nullptr){
+        ListNode* tmp = needReverser->next;
+        needReverser->next = pre2;
+        pre2 = needReverser;
+        needReverser = tmp;
+    }
+
+    ListNode *cur = head;
+    while(cur && pre2){
+        ListNode *curSecond = pre2;
+        pre2 = pre2->next;
+        ListNode *nextCur = cur->next;
+        curSecond->next = cur->next;
+        cur->next = curSecond;
+
+        cur = nextCur;
+    }
     Solution().Print_List(head);
 }
 

@@ -21,6 +21,9 @@ struct ListNode{
 
 class Solution{
 public:
+
+    ListNode* rotateRight(ListNode* head, int k);
+
     // 143.重排链表
     void reorderList(ListNode* head);
     // //86. 分割链表   注意两个链表的头指针
