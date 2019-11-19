@@ -5,18 +5,18 @@
 #ifndef INC_144_TWO_TREE_SOLUTION_H
 #define INC_144_TWO_TREE_SOLUTION_H
 
-struct TreeNode {
+typedef struct TreeNode {
      int val;
      TreeNode *left;
      TreeNode *right;
      TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-};
+}TreeNode,*PTREE;
 
 class Solution {
 
 public:
-    void CreatTree(TreeNode& Root);
-
+    void CreatTree(PTREE& Root);
+    void CreatTree_2(PTREE& Root);
 
 };
 
