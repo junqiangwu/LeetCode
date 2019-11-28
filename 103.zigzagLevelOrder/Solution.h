@@ -1,0 +1,14 @@
+//
+// Created by wjq on 2019/10/11.
+//
+
+#ifndef INC_103_ZIGZAGLEVELORDER_SOLUTION_H
+#define INC_103_ZIGZAGLEVELORDER_SOLUTION_H
+
+
+class Solution {
+
+};
+
+
+#endif //INC_103_ZIGZAGLEVELORDER_SOLUTION_H
