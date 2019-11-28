@@ -2,7 +2,6 @@
 #include "Solution.h"
 
 
-
 int main() {
 
     TreeNode* root;

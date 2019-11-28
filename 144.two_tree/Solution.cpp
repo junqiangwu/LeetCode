@@ -8,9 +8,9 @@
 //输入 abc***de**fg***  建立先序遍历为abcdefg的普通树
 //需要修改指向 树结构的 指针,所以形参为 指针的引用(指针的指针)
 TreeNode* Solution::CreatTree(){
-    char a=0;
-    a = getchar();
-    if(a=='*'){
+    int a=0;
+    cin>>a;
+    if(a==4){
         Root = NULL;
     }
     else{
@@ -25,6 +25,23 @@ TreeNode* Solution::CreatTree(){
     }
 }
 
+TreeNode* Solution::CreatTree_2(){
+    int a=0;
+    cin>>a;
+    if(a==4){
+        Root = NULL;
+    }
+    else{
+        Root = (TreeNode *)malloc(sizeof(TreeNode));
+        if(Root==NULL)
+            printf("Failed");
+        else{
+            Root->data = a;
+            CreatTree(Root->left);
+            CreatTree(Root->right);
+        }
+    }
+}
 
 void order(TreeNode* root,vector<int>& res) {
      if(root==nullptr) return ;
