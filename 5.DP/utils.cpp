@@ -366,8 +366,6 @@ int package_01(vector<int>& w,vector<int>& v,int c){
     return dp[n-1][c-1];
 }
 
-
-
 //
 
 string largestTimeFromDigits(vector<int>& A) {
@@ -397,4 +395,344 @@ string largestTimeFromDigits(vector<int>& A) {
     }
 
     return "a";
+}
+
+
+int findDuplicate(vector<int>& nums) {
+    int slow=1,fast=1;
+
+    while(true){
+//        cout<<"fast---"<<nums[fast]<<"--"<<nums[slow]<<endl;
+        fast = nums[nums[fast]];
+        slow = nums[slow];
+        // 找到环以后  重置fast指针,找相同的元素即为重复值
+        // 这个方法不能普遍适用,存在特殊情况
+        if(slow == fast) {
+            fast = 0;
+            while(nums[slow] != nums[fast]) {
+//                cout<<"fast11---"<<nums[fast]<<"--"<<nums[slow]<<endl;
+                fast = nums[fast];
+                slow = nums[slow];
+            }
+            return nums[slow];
+        }
+    }
+}
+
+
+vector<vector<int>> reconstructQueue(vector<vector<int>>& people) {
+
+
+}
+
+// 221 最大正方形
+int maximalSquare(vector<vector<char>>& matrix) {
+    int row = matrix.size();
+    if(row <= 0) return 0;
+    int col = matrix[0].size();
+    vector<vector<int>> dp (row,vector<int> (col,0));
+    int max_val = 0;
+
+    for(int i=0;i<row;i++){
+        if(matrix[i][0] == '1'){
+            dp[i][0] = 1;
+            max_val = 1;
+        }
+    }
+
+    for(int i=0;i<col;i++){
+        if(matrix[0][i] == '1') {
+            dp[0][i] = 1;
+            max_val =1;
+        }
+    }
+
+    for(int i=1;i<row;i++){
+        for(int j=1;j<col;j++){
+            if(matrix[i][j] == '1'){
+                dp[i][j] = 1 + min(dp[i-1][j-1],min(dp[i-1][j],dp[i][j-1]));
+                max_val = max(max_val,dp[i][j]);
+            }
+        }
+    }
+    return max_val*max_val;
+}
+
+
+
+int subarraySum(vector<int>& nums, int k) {
+    unordered_map<int,int> mp;
+    int size = nums.size();
+    if(size == 0) return 0;
+    int sum = 0,cnt=0;
+    mp[0] = 1;
+    for(int i=0;i<size;i++){
+        sum += nums[i];
+        auto iter = mp.find(sum-k);
+        if(iter!=mp.end())
+            cnt += iter->second;
+        mp[sum]+=1;
+    }
+
+    int res = 0;
+    for(int i=0;i<size;i++){
+        int sum = 0;
+        for(int j=i;j<size;j++){
+//            cout<<"1\t"<<i<<"--"<<j<<endl;
+            sum += nums[j];
+            if(sum == k)
+                res+=1;
+        }
+    }
+    cout<<"cnt---"<<res<<endl;
+
+    res = 0;
+    for(int i=0;i<size;i++){
+        for(int j=i;j<size;j++){
+            int sum = 0;
+            for(int k=i;k<j+1;k++)
+                sum+=nums[k];
+            if(sum == k)
+                res+=1;
+        }
+    }
+    cout<<"cnt---"<<res<<endl;
+
+    return cnt;
+}
+
+
+
+int getMinimumDifference(TreeNode* root) {
+    int min_val = INT32_MAX;
+    stack<TreeNode*> ms;
+    if(!root) return 0;
+    TreeNode* pre=NULL,*tmp=root;
+    while(!ms.empty() || tmp){
+
+        while(tmp){
+            ms.push(tmp);
+            tmp = tmp->left;
+        }
+        if(!ms.empty()){
+            if(pre)
+                min_val = min(abs(ms.top()->val - pre->val),min_val);
+            pre = ms.top();
+            ms.pop();
+            tmp = pre->right;
+        }
+    }
+    return min_val;
+}
+
+// 216 三角形最小路径和
+int minimumTotal2(vector<vector<int>>& triangle) {
+    int row = triangle.size();
+    if(row==0) return 0;
+    int col = triangle[row-1].size();
+
+    vector<vector<int>> dp(row+1,vector<int> (col+1,INT32_MAX));
+    dp[0][0] = triangle[0][0];
+
+    int min_val = INT32_MAX;
+    for(int i=1;i<row;i++){
+        int col_ = triangle[i].size();
+        for(int j=0;j<col_;j++){
+            if(j==0) {
+                dp[i][j] = dp[i-1][j]+triangle[i][j];
+            }else if(j==col_-1){
+                dp[i][j] = dp[i-1][j-1]+triangle[i][j];
+            }else{
+                dp[i][j] = min(dp[i-1][j-1],dp[i-1][j])+triangle[i][j];
+            }
+        }
+    }
+    for(int j=0;j<col;j++){
+        min_val = min(min_val,dp[row-1][j]);
+    }
+    return min_val;
+}
+
+
+int minimumTotal(vector<vector<int>>& triangle) {
+    int row = triangle.size();
+    if(row==0) return 0;
+    /*             |= triangle[n-1,c]       if n-1 is the last row.
+        f(n-1, c) -|
+                   |= min{f(n,c) + triangle[n-1,c], f(n,c+1) + triangle[n-1,c]}
+     * */
+    // 使用dp[i] 表示表示第i层所有节点的最小路径和
+    // 然后从底向上  逐步更新dp[i] 最后返回dp[0] 即为第0层第一个节点的最小路径和
+    vector<int> dp(row,0);
+    for(int i=0;i<row;i++)
+        dp[i] = triangle[row-1][i];
+
+    for(int i=row-2;i>=0;i--){
+        for(int j=0;j<i+1;j++){
+            dp[j] = min(dp[j],dp[j+1]) + triangle[i][j];
+        }
+    }
+    return dp[0];
+}
+
+
+
+int minimumTotal_err(vector<vector<int>>& triangle) {
+    int row = triangle.size();
+    if(row==0) return 0;
+    /*             |= triangle[n-1,c]       if n-1 is the last row.
+        f(n-1, c) -|
+                   |= min{f(n,c) + triangle[n-1,c], f(n,c+1) + triangle[n-1,c]}
+     * */
+    // 使用dp[i] 表示表示第i层所有节点的最小路径和
+    // 然后从底向上  逐步更新dp[i] 最后返回dp[0] 即为第0层第一个节点的最小路径和
+
+    vector<int> dp(row,INT32_MAX);
+    dp[0] = triangle[0][0];
+
+    for(int i=1;i<row;i++){
+        for(int j=0;j<i+1;j++){
+            if(j==0) dp[j] = dp[j] + triangle[i][j];
+            else if(j==i) dp[j] = dp[j-1] + triangle[i][j];
+            else dp[j] = min(dp[j],dp[j-1]) + triangle[i][j];
+        }
+        for(int i:dp)
+            cout<<i<<" ";
+        cout<<endl;
+    }
+    for(int i:dp)
+        cout<<i<<" ";
+    cout<<endl;
+
+    return *min_element(dp.begin(),dp.end());
+}
+
+/*input
+     *  {{2},
+        {3,4},
+       {6,5,7},
+      {4,1,8,3}};
+如果正序遍历的话, dp[j] = dp[j],dp[j-1] , 因为计算当前层 dp[j]需要用到 上一层的dp[j-1] 和 上一层的dp[j], 但是dp[j-1]已经更新为当前层的值,
+ 而在计算当前层的dp[j]时,需要用到上一层的dp[j-1],但是计算当前层dp[j]前,已经更新过dp[j-1],可以从下面结果中看出
+
+ * 2  \  \  \
+ * 5  9  \  \
+ * 11 14 21 \
+ * 15 15 23 26
+ *
+ * 倒序的话,dp[j] = min(dp[j],dp[j+1]), dp[j](当前层,更新) = dp[j](上一层.未更新),dp[j+1](上一层,未更新)
+ * 计算当前层dp[j] 需要用到 上一层的dp[j] 和 dp[j+1], 相当于dp[j] 更新为当前层值,dp[j+1] 等待下一个迭代更新
+ *
+ * */
+
+//931. 下降路径最小和
+int minFallingPathSum2(vector<vector<int>>& A) {
+    int row = A.size();
+    if(row == 0) return 0;
+    if(row == 1) return A[0][0];
+    int col = A[0].size();
+
+    vector<vector<int>> dp(row+1,vector<int> (col+1,INT32_MAX));
+    for(int i=0;i<row;i++){
+        for(int j=0;j<col;j++){
+            if(i==0) dp[i][j] = A[i][j];
+            else{
+                if(j==0) dp[i][j] = min(dp[i-1][j],dp[i-1][j+1])+A[i][j];
+                else if(j==col-1) dp[i][j] = min(dp[i-1][j-1],dp[i-1][j])+A[i][j];
+                else dp[i][j] = min(dp[i-1][j-1],min(dp[i-1][j+1],dp[i-1][j]))+A[i][j];
+            }
+        }
+    }
+    return *min_element(dp[row-1].begin(),dp[row-1].end());
+}
+
+
+int minFallingPathSum3(vector<vector<int>>& A) {
+    int row = A.size();
+    if(row == 0) return 0;
+    if(row == 1) return A[0][0];
+    int col = A[0].size();
+
+    vector<int> dp(col+1,INT32_MAX);
+    vector<int> dp2(col+1,INT32_MAX);
+
+    for(int i=row-1;i>=0;i--){
+        for(int j=0;j<col;j++){
+            if(i==row-1) dp[j] = A[i][j];
+            else{
+                if(j==0){
+                    dp[j] = min(dp2[j],dp2[j+1]) + A[i][j];
+                }else if(j==col-1){
+                    dp[j] = min(dp2[j],dp2[j-1]) + A[i][j];
+                }else{
+                    dp[j] = min(dp2[j-1],min(dp2[j+1],dp2[j]))+A[i][j];
+                }
+            }
+        }
+        if(i!=0) swap(dp,dp2);
+    }
+    return *min_element(dp.begin(),dp.end());
+}
+
+
+int minFallingPathSum(vector<vector<int>>& A) {
+    int row = A.size();
+    if(row == 0) return 0;
+    if(row == 1) return A[0][0];
+    int col = A[0].size();
+
+    vector<int> dp(col+2,INT32_MAX);
+    vector<int> dp2(col+2,INT32_MAX);
+
+    for(int i=1;i<row+1;i++){
+        for(int j=1;j<col+1;j++){
+            if(i==1) dp[j] = A[i-1][j-1];
+            else{
+                dp[j] = min(dp2[j-1],min(dp2[j+1],dp2[j]))+A[i-1][j-1];
+            }
+        }
+        if(i!=row) swap(dp,dp2);
+    }
+    return *min_element(dp.begin(),dp.end());
+}
+
+
+//368. 最大整除子集
+// 类似于最长子序列
+vector<int> largestDivisibleSubset(vector<int>& nums) {
+    int size = nums.size();
+    vector<int> res;
+    if(size <= 1) return nums;
+    vector<int> dp(size,1);
+    vector<int> path(size,-1);
+
+    sort(nums.begin(),nums.end());
+    int max_len = 0,pre = -1;
+
+    for(int i=0;i<size;i++){
+        for(int j=0;j<i;j++){
+            if(nums[i]%nums[j]==0 && dp[j]+1>dp[i]){
+                dp[i] = dp[j]+1;
+                path[i] = j;
+            }
+        }
+        if(dp[i]>max_len){
+            max_len = dp[i];
+            pre = i;
+        }
+    }
+
+    while(pre!=-1){
+        res.push_back(nums[pre]);
+        pre = path[pre];
+    }
+
+    reverse(res.begin(),res.end());
+    return res;
+}
+
+
+
+int findLength(vector<int>& A, vector<int>& B) {
+
 }
