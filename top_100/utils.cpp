@@ -89,3 +89,102 @@ vector<vector<int>> subsets(vector<int>& nums) {
 
     return res;
 }
+
+
+
+bool canPartition2(vector<int>& nums) {
+    int size = nums.size();
+    if(size <= 1) return false;
+    int sum = 0;
+    for(int i:nums) sum+=i;
+    if(sum%2 != 0) return false;
+    int target = sum/2;
+    vector<vector<int>> dp(size,vector<int> (target+1,-1));
+
+    for(int i=0;i<size;i++){
+        for(int j=0;j<=target;j++){
+            if(!i) dp[i][j] = (nums[i]==j);//i==0要单独求{ nums[0]一个元素和为s }
+            // dp[i-1][j] 不取任何元素   dp[i-1][j-nums[i]]  装入nums[i] 这个元素
+            else dp[i][j] = dp[i-1][j] || (j-nums[i]>=0 ? dp[i-1][j-nums[i]] : false);
+        }
+    }
+
+    return dp[nums.size()-1][target];//[0,nums.size()-1]区间和为sum
+}
+
+
+bool canPartition(vector<int>& nums) {
+    int size = nums.size();
+    if(size <= 1) return false;
+    int sum = 0;
+    for(int i:nums) sum+=i;
+    if(sum%2 != 0) return false;
+    int target = sum/2;
+    vector<int> dp(target+1,-1);
+
+    for(int i=0;i<size;i++){
+        for(int j=target ;j>=0;j--){
+            if(i==0) dp[j] = (j==nums[i]);
+            else{
+                dp[j] = dp[j] || dp[j-nums[i]];
+            }
+        }
+    }
+    return dp[target];//[0,nums.size()-1]区间和为sum
+}
+
+
+int maxProduct(vector<int>& nums) {
+    int res = INT_MIN;
+    int left_max = 1;
+    // 存在0的话   置为1  开始计算新的连续子序列  [2,3,0,4]
+    for (int i = 0; i < nums.size(); ++i) {
+        left_max *= nums[i];
+        res = max(res, left_max);
+        left_max = (left_max == 0) ? 1 : left_max;
+    }
+    int right_max = 1;
+    for (int i = nums.size() - 1; i >= 0; --i) {
+        right_max *= nums[i];
+        res = max(res, right_max);
+        right_max = (right_max == 0) ? 1 : right_max;
+    }
+    return res;
+}
+
+
+int maxProduct2(vector<int>& nums) {
+    const int N=nums.size();
+    vector<int> d(N),e(N);
+    d[0]=nums[0];
+    e[0]=nums[0];
+    int ans=INT_MIN;
+    ans=max(ans,max(d[0],e[0]));
+    for(int i=1;i<N;++i){
+        d[i]=max(nums[i],max(nums[i]*d[i-1],nums[i]*e[i-1]));
+        e[i]=min(nums[i],min(nums[i]*d[i-1],nums[i]*e[i-1]));
+        ans = max(ans,max(d[i],e[i]));
+    }
+    return ans;
+}
+
+
+
+int maximalSquare(vector<vector<char>>& matrix) {
+    int row = matrix.size();
+    if(row<=0) return 0;
+    int col = matrix[0].size();
+
+    vector<vector<int>> dp (row+1,vector<int> (col+1,0));
+    int max_val = 0;
+    for(int i=1;i<row;i++){
+        for(int j=1;j<col;j++){
+            if(matrix[i][j]=='1'){
+                dp[i][j] = 1 + min(dp[i-1][j-1],min(dp[i-1][j],dp[i][j-1]));
+                max_val = max(max_val,dp[i][j]);
+            }
+        }
+    }
+    return max_val;
+}
+
